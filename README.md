@@ -26,15 +26,20 @@ Over time, the user (that is you) will accumulate notes—thank you cards, weddi
 
 2. **You want a customizable note sending/receiving app for an expensive cost of $0.00.**
 
-Grace allows you to befriend or follow users. Befriending ables you to send a note to that person and vice versa. Following a user does not prohibit you to send them a note, however it allows them to send you one. This is especially useful for social media accounts with large following. Not only that, it is useful for companies too!
+Grace allows you to befriend or follow users. Befriending allows you to send a note to that person and vice versa. Following a user does not prohibit you to send them a note, however it allows them to send you one. This is especially useful for social media accounts with large following. Not only that, it is useful for companies too!
+
+## Features
+- Card creation interface
+- Send created cards to your desired network(friends, groups, or followers) for unlimited times(rate-limited) for free!
+- Exposable QR code for friends and followers.
+- Note widget like Locket Widget, except for cards! (TBD)
+- PWA capability
+- Open-sourced card templates
 
 ### Caveats
 - This app allows you to create a note only in the app. It will not expose an API for customers. This is because:
   1. We want our grace cards to be handled by a human and not just a robot. We want them to be as genuine as possible and so—API is out of the scope of the project.
   2. I am an unemployed developer looking for a job. This project was both a gift to the community and part of my portfolio. This means that expensive features such as an exposed API is a no-no-mojo.
-
-## Features
-(TBD)
 
 ## Documentation
 (TBD)
