@@ -32,10 +32,11 @@ Grace allows you to befriend or follow users. Befriending allows you to send a n
 - A card creation interface and similar capabilities such as [Canva](https://www.canva.com/), [CardSnacks](https://www.cardsnacks.com/), etc. for free
 - Send created cards to your desired network(friends, groups, or followers) for unlimited times
 - Receive cards from other users via notifications and play them in real-time
-- Exposable QR code for friends and followers
-- Note widget like Locket Widget, except for cards! (TBD)
-- PWA capability
+- Exposable QR code for friends and followers, useful for content creators
+- A note widget similar to Locket Widget, except for cards!
+- Download and use the web version as PWA or the native app.
 - Open-sourced card templates
+- Integrations with your favorite social media apps(Facebook, Instagram, Bluesky, etc.)
 
 > [!NOTE]
 > Card sending have a rate-limit
@@ -43,7 +44,7 @@ Grace allows you to befriend or follow users. Befriending allows you to send a n
 ### Caveats
 - This app allows you to create a note only in the app. It will not expose an API for customers. This is because:
   1. We want our grace cards to be handled by a human and not just a robot. We want them to be as genuine as possible and so—API is out of the scope of the project.
-  2. I am a software developer looking for a job. This project was both a gift to the community and part of my portfolio. This means that expensive features such as an exposed API is a no-no-mojo.
+  2. I am a software developer looking for a job. This project was both a gift to the community and part of my portfolio. This means that expensive features such as an exposed API will not be implemented.
 
 ## Sponsors
 
@@ -54,4 +55,4 @@ Grace allows you to befriend or follow users. Befriending allows you to send a n
 (TBD)
 
 ## Contribution
-(TBD)
+See [contribution guide](./CONTRIBUTING.md).
