@@ -3,26 +3,50 @@ package store
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
 
 	_ "github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
+)
+
+var (
+	ErrDuplicateEmail    = errors.New("a user with that email already exists")
+	ErrDuplicateUsername = errors.New("a user with that username already exists")
 )
 
 type User struct {
 	ID        int64     `json:"id"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
-	Password  string    `json:"-"`
+	Password  password  `json:"-"`
 	Verified  bool      `json:"verified"`   // email is verified
 	UpdatedAt time.Time `json:"updated_at"` // last time user was updated
 	CreatedAt time.Time `json:"created_at"` // user's account creation date
+}
+
+type password struct {
+	text *string
+	hash []byte
+}
+
+func (p *password) Set(text string) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(text), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	p.text = &text
+	p.hash = hash
+
+	return nil
 }
 
 type UserStore struct {
 	db *sql.DB
 }
 
-func (s *UserStore) Create(ctx context.Context, user *User) error {
+func (s *UserStore) Create(ctx context.Context, tx *sql.Tx, user *User) error {
 	query := `
 		INSERT INTO users (username, password, email)
 		VALUES ($1, $2, $3)
@@ -32,11 +56,11 @@ func (s *UserStore) Create(ctx context.Context, user *User) error {
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	err := s.db.QueryRowContext(
+	err := tx.QueryRowContext(
 		ctx,
 		query,
 		user.Username,
-		user.Password,
+		user.Password.hash,
 		user.Email,
 	).Scan(
 		&user.ID,
@@ -44,7 +68,14 @@ func (s *UserStore) Create(ctx context.Context, user *User) error {
 	)
 
 	if err != nil {
-		return err
+		switch {
+		case err.Error() == `pq: duplicate key value violates unique constraint "users_email_key"`:
+			return ErrDuplicateEmail
+		case err.Error() == `pq: duplicate key value violates unique constraint "users_username_key"`:
+			return ErrDuplicateUsername
+		default:
+			return err
+		}
 	}
 
 	return nil
