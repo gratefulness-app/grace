@@ -240,7 +240,7 @@ export default function Home() {
                   <p className="text-muted-foreground text-sm">Content Creator</p>
                 </div>
               </div>
-              <p className="text-muted-foreground mb-4">&quout;Grace has completely transformed how I connect with my followers. The card templates are beautiful and my audience loves receiving personalized messages!&quout;</p>
+              <p className="text-muted-foreground mb-4">&quot;Grace has completely transformed how I connect with my followers. The card templates are beautiful and my audience loves receiving personalized messages!&quot;</p>
               <div className="flex text-amber-500">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="size-4 fill-amber-500" />
@@ -258,7 +258,7 @@ export default function Home() {
                   <p className="text-muted-foreground text-sm">Designer</p>
                 </div>
               </div>
-              <p className="text-muted-foreground mb-4">&quout;As a designer, I appreciate the clean interface and the ability to customize every aspect of my cards. The template sharing feature is a game changer for the community.&quout;</p>
+              <p className="text-muted-foreground mb-4">&quot;As a designer, I appreciate the clean interface and the ability to customize every aspect of my cards. The template sharing feature is a game changer for the community.&quot;</p>
               <div className="flex text-amber-500">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="size-4 fill-amber-500" />
@@ -276,7 +276,7 @@ export default function Home() {
                   <p className="text-muted-foreground text-sm">Teacher</p>
                 </div>
               </div>
-              <p className="text-muted-foreground mb-4">&quout;I use Grace to create cards for my students&apos; achievements. It&apos;s incredibly easy to use and the kids love receiving personalized recognition for their hard work.&quout;</p>
+              <p className="text-muted-foreground mb-4">&quot;I use Grace to create cards for my students&apos; achievements. It&apos;s incredibly easy to use and the kids love receiving personalized recognition for their hard work.&quot;</p>
               <div className="flex text-amber-500">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="size-4 fill-amber-500" />
