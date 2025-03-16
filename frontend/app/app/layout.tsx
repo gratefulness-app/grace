@@ -29,18 +29,20 @@ import {
   Github,
   Star
 } from 'lucide-react';
+import Footer from '../../components/common/footer';
+import Link from 'next/link';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen w-screen bg-background">
         {/* Top app bar for mobile */}
         <header className="border-b flex items-center gap-3 p-3 md:hidden">
           <SidebarTrigger />
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Heart className="size-5 text-pink-500 fill-pink-500" />
             <span className="font-bold">Grace</span>
-          </div>
+          </Link>
           <div className="ml-auto flex items-center gap-2">
             <Button variant="ghost" size="icon">
               <Bell className="size-5" />
@@ -55,10 +57,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="flex">
           <Sidebar>
             <SidebarHeader>
-              <div className="flex items-center gap-2 px-2 h-12">
+              <Link href="/" className="flex items-center gap-2 px-2 h-12">
                 <Heart className="size-6 text-pink-500 fill-pink-500" />
                 <span className="font-bold text-lg">Grace</span>
-              </div>
+              </Link>
               <div className="flex items-center gap-2">
                 <Input placeholder="Search..." className="flex-1" />
                 <Button variant="ghost" size="icon">
@@ -180,6 +182,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <main className="p-6">
               {children}
             </main>
+
+            <Footer />
           </SidebarInset>
         </div>
       </div>

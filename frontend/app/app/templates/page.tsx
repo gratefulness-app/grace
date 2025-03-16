@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Filter, Star, Heart, Gift, Calendar, Award, Cake, ThumbsUp, ArrowRight, Plus } from 'lucide-react';
@@ -33,7 +33,7 @@ function TemplateCard({ title, category, author, rating, color }: {
   color: string
 }) {
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow">
+    <Card className="overflow-hidden hover:shadow-md transition-shadow p-0">
       <CardHeader className="p-0">
         <div
           className="h-40 flex items-center justify-center"

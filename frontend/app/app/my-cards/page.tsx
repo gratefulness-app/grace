@@ -1,13 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
-import { Card, CardHeader, CardContent, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  Search, Filter, Heart, Edit, Trash, Share, Copy,
-  Calendar, Eye, Clock, ArrowUpDown, Plus, MoreHorizontal
+  Search, Filter, Edit, Share, Copy,
+  Calendar, Eye, ArrowUpDown, Plus, MoreHorizontal
 } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
 
 // Sample card component
 function CardItem({
@@ -24,7 +23,7 @@ function CardItem({
   id: number
 }) {
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card id={id.toString()} className="hover:shadow-md transition-shadow p-0 w-[250px]">
       <CardHeader className="relative p-0 h-48 overflow-hidden rounded-t-xl">
         <div
           className="absolute inset-0 flex items-center justify-center"
@@ -112,7 +111,21 @@ export default function MyCardsPage() {
       createdAt: "February 10, 2025",
       views: 20,
       color: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-    }
+    },
+    {
+      id: 7,
+      title: "Thank You Card",
+      createdAt: "March 10, 2025",
+      views: 24,
+      color: "linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%)"
+    },
+    {
+      id: 8,
+      title: "Birthday Wishes for Mom",
+      createdAt: "March 5, 2025",
+      views: 12,
+      color: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)"
+    },
   ];
 
   return (
@@ -160,7 +173,7 @@ export default function MyCardsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-fit">
         {myCards.map((card) => (
           <CardItem
             key={card.id}

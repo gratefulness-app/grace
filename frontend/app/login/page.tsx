@@ -3,14 +3,14 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Github, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left side - Login Form */}
       <div className="md:w-1/2 flex items-center justify-center p-6 md:p-10">
-        <Card className="w-full max-w-md shadow-sm">
+        <Card className="w-full max-w-md border-none shadow-none">
           <CardHeader className="space-y-1">
             <div className="flex items-center justify-center mb-2">
               <Heart className="size-8 text-pink-500 fill-pink-500" />
@@ -97,7 +97,7 @@ export default function LoginPage() {
           </CardContent>
           <CardFooter>
             <p className="text-center text-sm text-muted-foreground w-full">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/signup" className="text-primary underline-offset-4 hover:underline">
                 Sign up
               </Link>

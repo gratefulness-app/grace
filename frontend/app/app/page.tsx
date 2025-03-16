@@ -57,9 +57,9 @@ export default function Dashboard() {
       </div>
 
       <h2 className="text-xl font-semibold mt-8 mb-4">Your Recent Cards</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-fit">
         {[...Array(3)].map((_, i) => (
-          <Card key={i} className="hover:shadow-md transition-shadow">
+          <Card key={i} className="hover:shadow-md transition-shadow p-0 w-[250px]">
             <CardHeader className="relative h-40 p-0 overflow-hidden rounded-t-xl border-b">
               <div className="absolute inset-0 bg-gradient-to-br from-pink-200 to-pink-400 flex items-center justify-center">
                 <Heart className="size-16 text-white/70" />
@@ -83,9 +83,9 @@ export default function Dashboard() {
       </div>
 
       <h2 className="text-xl font-semibold mt-8 mb-4">Popular Templates</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-fit">
         {[...Array(3)].map((_, i) => (
-          <Card key={i} className="hover:shadow-md transition-shadow">
+          <Card key={i} className="hover:shadow-md transition-shadow p-0 w-[250px]">
             <CardHeader className="relative h-40 p-0 overflow-hidden rounded-t-xl border-b">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-200 to-purple-300 flex items-center justify-center">
                 <Star className="size-16 text-white/70" />

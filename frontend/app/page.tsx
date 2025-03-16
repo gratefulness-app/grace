@@ -16,19 +16,19 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" asChild>
-            <a href="#features">Features</a>
+            <Link href="#features">Features</Link>
           </Button>
           <Button variant="ghost" size="sm" asChild>
-            <a href="#templates">Templates</a>
+            <Link href="#templates">Templates</Link>
           </Button>
           <Button variant="ghost" size="sm" asChild>
-            <a href="#support">Support</a>
+            <Link href="#support">Support</Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <a href="https://github.com/gratefulness-app/grace" target="_blank" rel="noopener noreferrer">
+            <Link href="https://github.com/gratefulness-app/grace" target="_blank" rel="noopener noreferrer">
               <Github className="mr-2 size-4" />
               GitHub
-            </a>
+            </Link>
           </Button>
           <Button size="sm" asChild>
             <Link href="/app">
@@ -157,9 +157,7 @@ export default function Home() {
       </div>
 
       {/* Login Section (replacing How It Works) */}
-      <div className="bg-muted">
-        <LoginPage />
-      </div>
+      <LoginPage />
 
       {/* Templates Section */}
       <div id="templates" className="py-16 px-4 md:px-10">
@@ -242,7 +240,7 @@ export default function Home() {
                   <p className="text-muted-foreground text-sm">Content Creator</p>
                 </div>
               </div>
-              <p className="text-muted-foreground mb-4">"Grace has completely transformed how I connect with my followers. The card templates are beautiful and my audience loves receiving personalized messages!"</p>
+              <p className="text-muted-foreground mb-4">&quout;Grace has completely transformed how I connect with my followers. The card templates are beautiful and my audience loves receiving personalized messages!&quout;</p>
               <div className="flex text-amber-500">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="size-4 fill-amber-500" />
@@ -260,7 +258,7 @@ export default function Home() {
                   <p className="text-muted-foreground text-sm">Designer</p>
                 </div>
               </div>
-              <p className="text-muted-foreground mb-4">"As a designer, I appreciate the clean interface and the ability to customize every aspect of my cards. The template sharing feature is a game changer for the community."</p>
+              <p className="text-muted-foreground mb-4">&quout;As a designer, I appreciate the clean interface and the ability to customize every aspect of my cards. The template sharing feature is a game changer for the community.&quout;</p>
               <div className="flex text-amber-500">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="size-4 fill-amber-500" />
@@ -278,7 +276,7 @@ export default function Home() {
                   <p className="text-muted-foreground text-sm">Teacher</p>
                 </div>
               </div>
-              <p className="text-muted-foreground mb-4">"I use Grace to create cards for my students' achievements. It's incredibly easy to use and the kids love receiving personalized recognition for their hard work."</p>
+              <p className="text-muted-foreground mb-4">&quout;I use Grace to create cards for my students&apos; achievements. It&apos;s incredibly easy to use and the kids love receiving personalized recognition for their hard work.&quout;</p>
               <div className="flex text-amber-500">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="size-4 fill-amber-500" />
@@ -306,10 +304,10 @@ export default function Home() {
               <p className="text-muted-foreground mb-4">Grace is an open-source project maintained by volunteers. Your support helps us continue to improve and add new features.</p>
             </div>
             <Button variant="outline" size="lg" asChild>
-              <a href="https://github.com/sponsors/gratefulness-app" target="_blank" rel="noopener noreferrer">
+              <Link href="https://github.com/sponsors/gratefulness-app" target="_blank" rel="noopener noreferrer">
                 <Heart className="mr-2 size-4 text-pink-500" />
                 Become a Sponsor
-              </a>
+              </Link>
             </Button>
           </div>
         </div>
@@ -323,11 +321,11 @@ export default function Home() {
             <span className="font-medium">Grace</span>
           </div>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <a href="#features" className="hover:text-foreground">Features</a>
-            <a href="#templates" className="hover:text-foreground">Templates</a>
-            <a href="#" className="hover:text-foreground">API</a>
-            <a href="https://github.com/gratefulness-app/grace" className="hover:text-foreground">GitHub</a>
-            <a href="#support" className="hover:text-foreground">Support</a>
+            <Link href="#features" className="hover:text-foreground">Features</Link>
+            <Link href="#templates" className="hover:text-foreground">Templates</Link>
+            <Link href="#" className="hover:text-foreground">API</Link>
+            <Link href="https://github.com/gratefulness-app/grace" className="hover:text-foreground">GitHub</Link>
+            <Link href="#support" className="hover:text-foreground">Support</Link>
           </div>
           <div className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Grace. All rights reserved.
