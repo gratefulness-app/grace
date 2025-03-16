@@ -30,6 +30,19 @@ jobs:
         working-directory: ./frontend
         run: npm install -D vercel@latest
         
+      # Create vercel.json to explicitly define the project
+      - name: Create Vercel Project Configuration
+        working-directory: ./frontend
+        run: |
+          echo '{
+            "framework": "nextjs",
+            "buildCommand": "next build",
+            "outputDirectory": ".next",
+            "devCommand": "next dev",
+            "installCommand": "npm install"
+          }' > vercel.json
+          cat vercel.json
+        
       - name: Pull Vercel Environment Information
         working-directory: ./frontend
         run: npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
