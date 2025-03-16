@@ -31,7 +31,7 @@ export default function Home() {
             </Link>
           </Button>
           <Button size="sm" asChild>
-            <Link href="/app">
+            <Link href="/login">
               Get Started
               <ArrowRight className="ml-2 size-4" />
             </Link>
