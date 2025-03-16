@@ -1,39 +1,46 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Search, Filter, Edit, Share, Copy,
-  Calendar, Eye, ArrowUpDown, Plus, MoreHorizontal
+  Calendar, Eye, Plus, MoreHorizontal, Inbox, Pencil, SortAsc
 } from 'lucide-react';
 
-// Sample card component
+// Card component that matches the screenshot
 function CardItem({
   title,
   createdAt,
   views,
   color,
-  id
+  id,
+  sender = undefined
 }: {
   title: string,
   createdAt: string,
   views: number,
   color: string,
-  id: number
+  id: number,
+  sender?: string
 }) {
   return (
-    <Card id={id.toString()} className="hover:shadow-md transition-shadow p-0 w-[250px]">
-      <CardHeader className="relative p-0 h-48 overflow-hidden rounded-t-xl">
-        <div
-          className="absolute inset-0 flex items-center justify-center"
-          style={{ background: color }}
-        >
-          <div className="text-white text-center p-6">
-            <h3 className="text-lg font-medium mb-2">{title}</h3>
-          </div>
+    <Card className="p-0 overflow-hidden">
+      <div
+        className="h-[180px] flex items-center justify-center text-white text-center rounded-t-xl"
+        style={{ background: color }}
+      >
+        <div className="p-6">
+          <h3 className="text-lg font-medium mb-2">{title}</h3>
+          {sender && (
+            <p className="text-sm text-white/80">From: {sender}</p>
+          )}
         </div>
-      </CardHeader>
+      </div>
+
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-2 text-sm text-muted-foreground">
           <div className="flex items-center">
@@ -45,20 +52,22 @@ function CardItem({
             <span>{views}</span>
           </div>
         </div>
+
         <div className="flex justify-between">
-          <Button variant="ghost" size="sm">
-            <Share className="size-3.5 mr-1" />
+          <Button variant="ghost" size="sm" className="p-0 h-auto">
+            <Share className="size-4 mr-1" />
             Share
           </Button>
+
           <div className="flex gap-1">
-            <Button variant="ghost" size="icon" className="size-8">
-              <Edit className="size-3.5" />
+            <Button variant="ghost" size="icon" className="size-8 p-0 h-auto">
+              <Edit className="size-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="size-8">
-              <Copy className="size-3.5" />
+            <Button variant="ghost" size="icon" className="size-8 p-0 h-auto">
+              <Copy className="size-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="size-8">
-              <MoreHorizontal className="size-3.5" />
+            <Button variant="ghost" size="icon" className="size-8 p-0 h-auto">
+              <MoreHorizontal className="size-4" />
             </Button>
           </div>
         </div>
@@ -67,8 +76,34 @@ function CardItem({
   );
 }
 
+// Empty state component
+function EmptyState({ type, action }: { type: string, action: React.ReactNode }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <div className="size-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+        {type === 'created' ? (
+          <Pencil className="size-8 text-muted-foreground/60" />
+        ) : (
+          <Inbox className="size-8 text-muted-foreground/60" />
+        )}
+      </div>
+      <h2 className="text-xl font-semibold mb-2">
+        {type === 'created' ? 'No cards created yet' : 'No cards received yet'}
+      </h2>
+      <p className="text-muted-foreground max-w-sm mb-6">
+        {type === 'created'
+          ? 'Start creating beautiful cards to share with your friends, family, and followers.'
+          : 'Cards that others send to you will appear here.'}
+      </p>
+      {action}
+    </div>
+  );
+}
+
 export default function MyCardsPage() {
-  // Sample data for my cards
+  const [activeTab, setActiveTab] = useState('created');
+
+  // Sample data for cards (matching the screenshot)
   const myCards = [
     {
       id: 1,
@@ -125,103 +160,163 @@ export default function MyCardsPage() {
       createdAt: "March 5, 2025",
       views: 12,
       color: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)"
+    }
+  ];
+
+  // Sample data for received cards
+  const receivedCards = [
+    {
+      id: 101,
+      title: "Happy Birthday!",
+      createdAt: "March 15, 2025",
+      views: 1,
+      color: "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
+      sender: "Sarah Johnson"
     },
+    {
+      id: 102,
+      title: "Thank You for Your Help",
+      createdAt: "March 8, 2025",
+      views: 1,
+      color: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      sender: "Mark Wilson"
+    },
+    {
+      id: 103,
+      title: "Congrats on Your New Role",
+      createdAt: "March 1, 2025",
+      views: 1,
+      color: "linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)",
+      sender: "Team at Acme Inc."
+    }
   ];
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">My Cards</h1>
           <p className="text-muted-foreground">Manage and share your created cards</p>
         </div>
-        <div className="flex gap-2">
-          <Button asChild>
-            <Link href="/app/create">
-              <Plus className="mr-1 size-4" />
-              Create Card
-            </Link>
-          </Button>
-        </div>
-      </div>
-
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-muted/40 rounded-lg">
-        <div className="relative w-full md:w-64">
-          <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-          <Input
-            placeholder="Search cards"
-            className="pl-9"
-          />
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Calendar className="mr-1 size-4" />
-            Date
-          </Button>
-          <Button variant="outline" size="sm">
-            <Eye className="mr-1 size-4" />
-            Views
-          </Button>
-          <Button variant="outline" size="sm">
-            <ArrowUpDown className="mr-1 size-4" />
-            Sort
-          </Button>
-          <Button variant="outline" size="sm">
-            <Filter className="mr-1 size-4" />
-            Filter
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-fit">
-        {myCards.map((card) => (
-          <CardItem
-            key={card.id}
-            id={card.id}
-            title={card.title}
-            createdAt={card.createdAt}
-            views={card.views}
-            color={card.color}
-          />
-        ))}
-      </div>
-
-      {/* Empty state - uncomment to show when no cards exist */}
-      {/* 
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="size-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-          <Heart className="size-8 text-muted-foreground/60" />
-        </div>
-        <h2 className="text-xl font-semibold mb-2">No cards yet</h2>
-        <p className="text-muted-foreground max-w-sm mb-6">
-          Start creating beautiful cards to share with your friends, family, and followers.
-        </p>
-        <Button asChild>
+        <Button asChild className="gap-1">
           <Link href="/app/create">
-            <Plus className="mr-1 size-4" />
-            Create Your First Card
+            <Plus className="size-4" />
+            Create Card
           </Link>
         </Button>
       </div>
-      */}
 
-      {/* Pagination */}
-      <div className="flex justify-between items-center mt-8">
-        <div className="text-sm text-muted-foreground">
-          Showing <strong>6</strong> of <strong>6</strong> cards
+      <Tabs defaultValue="created" value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="mb-4">
+          <TabsTrigger value="created">My Created Cards</TabsTrigger>
+          <TabsTrigger value="received">Received Cards</TabsTrigger>
+        </TabsList>
+
+        <div className="flex items-center justify-between mb-4">
+          <div className="relative w-[350px]">
+            <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+            <Input
+              placeholder="Search cards"
+              className="pl-8"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="gap-1">
+              <Calendar className="size-4" />
+              Date
+            </Button>
+            <Button variant="outline" size="sm" className="gap-1">
+              <Eye className="size-4" />
+              Views
+            </Button>
+            <Button variant="outline" size="sm" className="gap-1">
+              <SortAsc className="size-4" />
+              Sort
+            </Button>
+            <Button variant="outline" size="sm" className="gap-1">
+              <Filter className="size-4" />
+              Filter
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-1">
-          <Button variant="outline" size="sm" disabled>
-            Previous
-          </Button>
-          <Button variant="outline" size="sm" className="bg-primary text-primary-foreground">
-            1
-          </Button>
-          <Button variant="outline" size="sm" disabled>
-            Next
-          </Button>
-        </div>
-      </div>
+
+        <TabsContent value="created" className="mt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {myCards.map((card) => (
+              <CardItem
+                key={card.id}
+                id={card.id}
+                title={card.title}
+                createdAt={card.createdAt}
+                views={card.views}
+                color={card.color}
+              />
+            ))}
+          </div>
+
+          <div className="flex justify-between mt-8 text-sm">
+            <div className="text-muted-foreground">
+              Showing 6 of 8 cards
+            </div>
+            <div className="flex items-center gap-1">
+              <Button variant="outline" size="sm" disabled>
+                Previous
+              </Button>
+              <Button variant="outline" size="sm" className="bg-primary text-primary-foreground">
+                1
+              </Button>
+              <Button variant="outline" size="sm">
+                Next
+              </Button>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="received" className="mt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {receivedCards.map((card) => (
+              <CardItem
+                key={card.id}
+                id={card.id}
+                title={card.title}
+                createdAt={card.createdAt}
+                views={card.views}
+                color={card.color}
+                sender={card.sender}
+              />
+            ))}
+          </div>
+
+          {receivedCards.length > 0 ? (
+            <div className="flex justify-between mt-8 text-sm">
+              <div className="text-muted-foreground">
+                Showing {receivedCards.length} of {receivedCards.length} cards
+              </div>
+              <div className="flex items-center gap-1">
+                <Button variant="outline" size="sm" disabled>
+                  Previous
+                </Button>
+                <Button variant="outline" size="sm" className="bg-primary text-primary-foreground">
+                  1
+                </Button>
+                <Button variant="outline" size="sm" disabled>
+                  Next
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <EmptyState
+              type="received"
+              action={
+                <Button variant="outline">
+                  <Share className="mr-1 size-4" />
+                  Share Your Profile
+                </Button>
+              }
+            />
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
