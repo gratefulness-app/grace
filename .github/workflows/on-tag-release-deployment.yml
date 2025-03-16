@@ -36,7 +36,7 @@ jobs:
 
       - name: List Build Artifacts
         working-directory: ./frontend
-  run: ls -al
+        run: ls -al
 
       - name: Build Project Artifacts
         working-directory: ./frontend
