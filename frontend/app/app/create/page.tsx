@@ -10,9 +10,12 @@ import {
   Image, Type, PaintBucket, LayoutGrid, Undo, Redo, Save,
   Share, Trash, Plus, Minus, MoveHorizontal, Check
 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 export default function CreateCardPage() {
-  const [cardTitle, setCardTitle] = useState("Untitled Card");
+  const searchParams = useSearchParams()
+  const titleParam = searchParams.get('template')?.replace(/_/g, ' ') || undefined;
+  const [cardTitle, setCardTitle] = useState(titleParam || "Untitled Card");
   const [selectedColor, setSelectedColor] = useState("#FFB6C1"); // Light pink
   const [fontSize, setFontSize] = useState(16);
 
@@ -180,14 +183,14 @@ export default function CreateCardPage() {
                 className="w-full max-w-md aspect-[2/3] rounded-lg border shadow-sm flex flex-col overflow-hidden"
                 style={{ backgroundColor: selectedColor }}
               >
-                <div className="flex-1 flex items-center justify-center p-6">
+                <div className="flex-1 flex items-center justify-center p-6 w-full h-full">
                   <div
                     contentEditable
                     className="w-full h-full flex items-center justify-center text-center outline-none"
                     style={{ fontSize: `${fontSize}px` }}
                     suppressContentEditableWarning
                   >
-                    Click to add your message
+                    {titleParam || "Click to add your message"}
                   </div>
                 </div>
                 <div className="p-4 text-center text-sm bg-white/10 backdrop-blur-sm">

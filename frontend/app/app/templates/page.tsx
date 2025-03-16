@@ -59,7 +59,7 @@ function TemplateCard({ title, category, author, rating, color }: {
             Save
           </Button>
           <Button size="sm" asChild>
-            <Link href={`/app/create?template=${encodeURIComponent(title)}`}>
+            <Link href={`/app/create?template=${encodeURIComponent(title.replace(/ /g, '_'))}`}>
               Use
               <ArrowRight className="ml-1 size-3.5" />
             </Link>
