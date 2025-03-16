@@ -2,7 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Send, Edit, Code, Share, Users, Github, Heart, Palette, Image, CheckCircle } from 'lucide-react';
+import { ArrowRight, Send, Edit, Code, Share, Users, Github, Heart, Palette } from 'lucide-react';
+import LoginPage from './login/page';
 
 export default function Home() {
   return (
@@ -155,36 +156,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* How It Works Section */}
-      <div id="how-it-works" className="bg-muted py-16 px-4 md:px-10">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-background rounded-lg p-6 text-center">
-              <div className="bg-primary/10 rounded-full size-16 flex items-center justify-center mx-auto mb-4">
-                <Edit className="size-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">1. Create</h3>
-              <p className="text-muted-foreground">Design your card using our intuitive editor with beautiful templates and customization options.</p>
-            </div>
-
-            <div className="bg-background rounded-lg p-6 text-center">
-              <div className="bg-primary/10 rounded-full size-16 flex items-center justify-center mx-auto mb-4">
-                <Image className="size-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">2. Personalize</h3>
-              <p className="text-muted-foreground">Add your personal message, photos, and unique touches to make your card special.</p>
-            </div>
-
-            <div className="bg-background rounded-lg p-6 text-center">
-              <div className="bg-primary/10 rounded-full size-16 flex items-center justify-center mx-auto mb-4">
-                <Send className="size-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">3. Share</h3>
-              <p className="text-muted-foreground">Send your card via notifications or share it on social media with your friends and followers.</p>
-            </div>
-          </div>
-        </div>
+      {/* Login Section (replacing How It Works) */}
+      <div className="bg-muted">
+        <LoginPage />
       </div>
 
       {/* Templates Section */}
