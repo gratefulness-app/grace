@@ -1,23 +1,39 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
-  AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline,
-  Image, Type, PaintBucket, LayoutGrid, Undo, Redo, Save,
-  Share, Trash, Plus, Minus, MoveHorizontal, Check
+  Type, Image as ImageIcon, PaintBucket, LayoutGrid, Undo, Redo, Save,
+  Share, Trash, MoveHorizontal, Check, Download, Layers
 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import { useCardStore, createTextElement } from '@/lib/stores/card-store';
+import CardCanvas from '@/components/card/canvas';
+import ElementProperties from '@/components/card/elementProperties';
 
 export default function CreateCardPage() {
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
   const titleParam = searchParams.get('template')?.replace(/_/g, ' ') || undefined;
-  const [cardTitle, setCardTitle] = useState(titleParam || "Untitled Card");
-  const [selectedColor, setSelectedColor] = useState("#FFB6C1"); // Light pink
-  const [fontSize, setFontSize] = useState(16);
+
+  const {
+    title,
+    setTitle,
+    backgroundColor,
+    setBackgroundColor,
+    addElement,
+    selectedElementId,
+    elements
+  } = useCardStore();
+
+  // Initialize the card title from URL params, if available
+  useEffect(() => {
+    if (titleParam) {
+      setTitle(titleParam);
+    }
+  }, [titleParam, setTitle]);
 
   const colorOptions = [
     "#FFB6C1", // Light pink
@@ -29,6 +45,25 @@ export default function CreateCardPage() {
     "#F0F8FF", // Alice blue
     "#FFDAB9", // Peach puff
   ];
+
+  // Handler for adding a new text element
+  const handleAddText = () => {
+    addElement(createTextElement({
+      text: "New Text",
+      x: Math.random() * 100 + 50, // Random position for variety
+      y: Math.random() * 100 + 50
+    }));
+  };
+
+  // Handle saving the card (placeholder for now)
+  const handleSaveCard = () => {
+    alert("Card saved! (This is a placeholder - actual saving functionality would be implemented in a real app)");
+    console.log("Card data:", {
+      title,
+      backgroundColor,
+      elements
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -46,7 +81,7 @@ export default function CreateCardPage() {
             <Redo className="mr-1 size-4" />
             Redo
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={handleSaveCard}>
             <Save className="mr-1 size-4" />
             Save
           </Button>
@@ -64,8 +99,8 @@ export default function CreateCardPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium">Card Title</label>
               <Input
-                value={cardTitle}
-                onChange={(e) => setCardTitle(e.target.value)}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter card title"
               />
             </div>
@@ -75,75 +110,39 @@ export default function CreateCardPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium">Add Element</label>
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="flex flex-col h-auto py-2">
+                <Button
+                  variant="outline"
+                  className="flex flex-col h-auto py-2"
+                  onClick={handleAddText}
+                >
                   <Type className="size-5 mb-1" />
                   <span className="text-xs">Text</span>
                 </Button>
-                <Button variant="outline" className="flex flex-col h-auto py-2">
-                  <Image className="size-5 mb-1" />
+                <Button
+                  variant="outline"
+                  className="flex flex-col h-auto py-2"
+                  disabled
+                  title="Coming soon"
+                >
+                  <ImageIcon className="size-5 mb-1" />
                   <span className="text-xs">Image</span>
                 </Button>
-                <Button variant="outline" className="flex flex-col h-auto py-2">
+                <Button
+                  variant="outline"
+                  className="flex flex-col h-auto py-2"
+                  disabled
+                  title="Coming soon"
+                >
                   <LayoutGrid className="size-5 mb-1" />
                   <span className="text-xs">Shape</span>
                 </Button>
-                <Button variant="outline" className="flex flex-col h-auto py-2">
+                <Button
+                  variant="outline"
+                  className="flex flex-col h-auto py-2"
+                  onClick={() => { }}
+                >
                   <PaintBucket className="size-5 mb-1" />
                   <span className="text-xs">Background</span>
-                </Button>
-              </div>
-            </div>
-
-            <Separator />
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Text Formatting</label>
-              <div className="flex flex-wrap gap-1">
-                <Button variant="outline" size="icon" className="size-8">
-                  <Bold className="size-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="size-8">
-                  <Italic className="size-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="size-8">
-                  <Underline className="size-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="size-8">
-                  <AlignLeft className="size-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="size-8">
-                  <AlignCenter className="size-4" />
-                </Button>
-                <Button variant="outline" size="icon" className="size-8">
-                  <AlignRight className="size-4" />
-                </Button>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Font Size: {fontSize}px</label>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="size-8"
-                  onClick={() => setFontSize(Math.max(8, fontSize - 1))}
-                >
-                  <Minus className="size-4" />
-                </Button>
-                <div className="flex-1 h-2 bg-muted rounded-full relative">
-                  <div
-                    className="absolute h-2 bg-primary rounded-full"
-                    style={{ width: `${(fontSize - 8) / 24 * 100}%` }}
-                  />
-                </div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="size-8"
-                  onClick={() => setFontSize(Math.min(32, fontSize + 1))}
-                >
-                  <Plus className="size-4" />
                 </Button>
               </div>
             </div>
@@ -158,15 +157,63 @@ export default function CreateCardPage() {
                     key={color}
                     className="w-full aspect-square rounded-md border flex items-center justify-center"
                     style={{ backgroundColor: color }}
-                    onClick={() => setSelectedColor(color)}
+                    onClick={() => setBackgroundColor(color)}
                   >
-                    {selectedColor === color && (
+                    {backgroundColor === color && (
                       <Check className="size-4 text-black/70" />
                     )}
                   </button>
                 ))}
               </div>
             </div>
+
+            <Separator />
+
+            {/* Elements List */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium">Elements</label>
+                <span className="text-xs text-muted-foreground">{elements.length} items</span>
+              </div>
+
+              {elements.length > 0 ? (
+                <div className="border rounded-md overflow-hidden">
+                  {elements.map((element, index) => (
+                    <div
+                      key={element.id}
+                      className={`flex items-center justify-between px-3 py-2 text-sm hover:bg-muted cursor-pointer ${selectedElementId === element.id ? 'bg-muted' : ''
+                        } ${index !== 0 ? 'border-t' : ''}`}
+                      onClick={() => useCardStore.getState().selectElement(element.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        {element.type === 'text' && <Type className="size-3.5" />}
+                        {element.type === 'image' && <ImageIcon className="size-3.5" />}
+                        {element.type === 'shape' && <LayoutGrid className="size-3.5" />}
+                        <span className="truncate max-w-[130px]">
+                          {element.type === 'text'
+                            ? (element as any).text.substring(0, 20) || 'Text'
+                            : element.type.charAt(0).toUpperCase() + element.type.slice(1)}
+                        </span>
+                      </div>
+                      <Layers className="size-3.5 text-muted-foreground" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-6 text-muted-foreground text-sm border rounded-md">
+                  <p>No elements added yet</p>
+                  <p className="text-xs mt-1">Use the tools above to add elements</p>
+                </div>
+              )}
+            </div>
+
+            {/* Show element properties if an element is selected */}
+            {selectedElementId && (
+              <>
+                <Separator />
+                <ElementProperties />
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -177,25 +224,10 @@ export default function CreateCardPage() {
               <CardTitle>Preview</CardTitle>
               <CardDescription>This is how your card will look</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col items-center justify-center p-8">
+            <CardContent className="flex-1 flex flex-col items-center justify-center p-4">
               {/* Card Preview Canvas */}
-              <div
-                className="w-full max-w-md aspect-[2/3] rounded-lg border shadow-sm flex flex-col overflow-hidden"
-                style={{ backgroundColor: selectedColor }}
-              >
-                <div className="flex-1 flex items-center justify-center p-6 w-full h-full">
-                  <div
-                    contentEditable
-                    className="w-full h-full flex items-center justify-center text-center outline-none"
-                    style={{ fontSize: `${fontSize}px` }}
-                    suppressContentEditableWarning
-                  >
-                    {titleParam || "Click to add your message"}
-                  </div>
-                </div>
-                <div className="p-4 text-center text-sm bg-white/10 backdrop-blur-sm">
-                  Made with ❤️ using Grace
-                </div>
+              <div className="w-full max-w-md aspect-[2/3] flex flex-col overflow-hidden">
+                <CardCanvas />
               </div>
             </CardContent>
             <CardFooter className="flex justify-between border-t">
@@ -209,10 +241,14 @@ export default function CreateCardPage() {
                   Templates
                 </Button>
                 <Button variant="outline" size="sm">
+                  <Download className="mr-1 size-4" />
+                  Export
+                </Button>
+                <Button variant="outline" size="sm">
                   <Share className="mr-1 size-4" />
                   Share
                 </Button>
-                <Button size="sm">
+                <Button size="sm" onClick={handleSaveCard}>
                   <Save className="mr-1 size-4" />
                   Save
                 </Button>
