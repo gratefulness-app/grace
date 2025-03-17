@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ import { useCardStore, createTextElement, CardElement } from '@/lib/stores/card-
 import CardCanvas from '@/components/card/canvas';
 import ElementProperties from '@/components/card/elementProperties';
 
-export default function CreateCardPage() {
+function CreateCardPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const cardIdParam = searchParams.get('id');
@@ -302,5 +302,13 @@ export default function CreateCardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CreateCardPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CreateCardPageContent />
+    </Suspense>
   );
 }
