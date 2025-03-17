@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
 import {
   Type, Image as ImageIcon, PaintBucket, LayoutGrid, Undo, Redo, Save,
   Share, Trash, MoveHorizontal, Check, Download, Layers
@@ -15,8 +17,11 @@ import CardCanvas from '@/components/card/canvas';
 import ElementProperties from '@/components/card/elementProperties';
 
 export default function CreateCardPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const cardIdParam = searchParams.get('id');
   const titleParam = searchParams.get('template')?.replace(/_/g, ' ') || undefined;
+  const [isSaving, setIsSaving] = useState(false);
 
   const {
     title,
@@ -25,15 +30,30 @@ export default function CreateCardPage() {
     setBackgroundColor,
     addElement,
     selectedElementId,
-    elements
+    elements,
+    createNewCard,
+    saveCard,
+    loadCard,
+    loadAllCards,
   } = useCardStore();
 
-  // Initialize the card title from URL params, if available
+  // Load card if ID is provided, or initialize with template title
   useEffect(() => {
-    if (titleParam) {
+    // First load all cards from cookies
+    loadAllCards();
+
+    if (cardIdParam) {
+      // If we have a card ID, load that specific card
+      loadCard(cardIdParam);
+    } else if (titleParam) {
+      // For a new card from template, create a new card and set the title
+      createNewCard();
       setTitle(titleParam);
+    } else {
+      // For a completely new card
+      createNewCard();
     }
-  }, [titleParam, setTitle]);
+  }, [cardIdParam, titleParam, loadCard, createNewCard, setTitle, loadAllCards]);
 
   const colorOptions = [
     "#FFB6C1", // Light pink
@@ -55,22 +75,47 @@ export default function CreateCardPage() {
     }));
   };
 
-  // Handle saving the card (placeholder for now)
+  // Handle saving the card
   const handleSaveCard = () => {
-    alert("Card saved! (This is a placeholder - actual saving functionality would be implemented in a real app)");
-    console.log("Card data:", {
-      title,
-      backgroundColor,
-      elements
-    });
+    setIsSaving(true);
+    try {
+      // Save the card and get the ID
+      const savedCardId = saveCard();
+      toast.success(`Card saved successfully! ID: ${savedCardId}`);
+
+      // If this is a new card (i.e., not editing an existing one),
+      // redirect to the my-cards page with a success message
+      if (!cardIdParam) {
+        router.push('/app/my-cards');
+      }
+    } catch (error) {
+      console.error("Error saving card:", error);
+      toast.error("Failed to save card. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Handle deleting the card (discard)
+  const handleDiscard = () => {
+    if (confirm("Are you sure you want to discard this card? All changes will be lost.")) {
+      createNewCard();
+      router.push('/app/my-cards');
+    }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Create a New Card</h1>
-          <p className="text-muted-foreground">Design your custom card and share it with your network</p>
+          <h1 className="text-2xl font-bold">
+            {cardIdParam ? 'Edit Card' : 'Create a New Card'}
+          </h1>
+          <p className="text-muted-foreground">
+            {cardIdParam
+              ? 'Make changes to your existing card'
+              : 'Design your custom card and share it with your network'}
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">
@@ -81,9 +126,9 @@ export default function CreateCardPage() {
             <Redo className="mr-1 size-4" />
             Redo
           </Button>
-          <Button size="sm" onClick={handleSaveCard}>
+          <Button size="sm" onClick={handleSaveCard} disabled={isSaving}>
             <Save className="mr-1 size-4" />
-            Save
+            {isSaving ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </div>
@@ -139,7 +184,6 @@ export default function CreateCardPage() {
                 <Button
                   variant="outline"
                   className="flex flex-col h-auto py-2"
-                  onClick={() => { }}
                 >
                   <PaintBucket className="size-5 mb-1" />
                   <span className="text-xs">Background</span>
@@ -231,9 +275,9 @@ export default function CreateCardPage() {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between border-t">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={handleDiscard}>
                 <Trash className="mr-1 size-4" />
-                Delete
+                {cardIdParam ? 'Discard Changes' : 'Delete'}
               </Button>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm">
@@ -248,9 +292,9 @@ export default function CreateCardPage() {
                   <Share className="mr-1 size-4" />
                   Share
                 </Button>
-                <Button size="sm" onClick={handleSaveCard}>
+                <Button size="sm" onClick={handleSaveCard} disabled={isSaving}>
                   <Save className="mr-1 size-4" />
-                  Save
+                  {isSaving ? 'Saving...' : 'Save'}
                 </Button>
               </div>
             </CardFooter>

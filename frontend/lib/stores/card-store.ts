@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
+import { getCookie, setCookie, isTooBigForCookie } from '../utils/cookie';
 
 // Define the types of elements that can be added to a card
 export type ElementType = 'text' | 'image' | 'shape';
@@ -48,14 +49,30 @@ export interface ShapeElement extends BaseElement {
 // Union type for all possible card elements
 export type CardElement = TextElement | ImageElement | ShapeElement;
 
+// Card data structure (for saving and loading)
+export interface CardData {
+  id: string;
+  title: string;
+  backgroundColor: string;
+  elements: CardElement[];
+  createdAt: string;
+  updatedAt: string;
+  views: number;
+}
+
 // Card state interface
 export interface CardState {
+  // Current working card
+  id: string;
   title: string;
   backgroundColor: string;
   elements: CardElement[];
   selectedElementId: string | null;
 
-  // Actions
+  // Saved cards
+  savedCards: CardData[];
+
+  // Card actions
   setTitle: (title: string) => void;
   setBackgroundColor: (color: string) => void;
   addElement: (element: Omit<CardElement, 'id'>) => string;
@@ -67,7 +84,18 @@ export interface CardState {
   rotateElement: (id: string, rotation: number) => void;
   bringElementToFront: (id: string) => void;
   sendElementToBack: (id: string) => void;
+
+  // Card management
+  createNewCard: () => void;
+  saveCard: () => string;
+  loadCard: (cardId: string) => void;
+  loadAllCards: () => void;
+  deleteCard: (cardId: string) => void;
+  incrementViews: (cardId: string) => void;
 }
+
+// Cookie name for saved cards
+const SAVED_CARDS_COOKIE = 'grace_saved_cards';
 
 // Default values for new text elements
 const defaultTextElement: Omit<TextElement, 'id'> = {
@@ -88,12 +116,48 @@ const defaultTextElement: Omit<TextElement, 'id'> = {
   alignment: 'center',
 };
 
-// Create the Zustand store
-export const useCardStore = create<CardState>((set) => ({
+// Create a new empty card
+const createEmptyCard = (): Pick<CardState, 'id' | 'title' | 'backgroundColor' | 'elements' | 'selectedElementId'> => ({
+  id: uuidv4(),
   title: 'Untitled Card',
   backgroundColor: '#FFB6C1', // Light pink
   elements: [],
   selectedElementId: null,
+});
+
+// Load saved cards from cookies
+const loadSavedCardsFromCookies = (): CardData[] => {
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const savedCardsJson = getCookie(SAVED_CARDS_COOKIE);
+    return savedCardsJson ? JSON.parse(savedCardsJson) : [];
+  } catch (error) {
+    console.error('Error loading saved cards:', error);
+    return [];
+  }
+};
+
+// Save cards to cookies
+const saveCardsToCookies = (cards: CardData[]) => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const savedCardsJson = JSON.stringify(cards);
+    if (isTooBigForCookie(savedCardsJson)) {
+      console.warn('Saved cards data exceeds cookie size limits. Some cards may not be saved.');
+      // In a real app, we'd use local storage, IndexedDB, or a backend
+    }
+    setCookie(SAVED_CARDS_COOKIE, savedCardsJson);
+  } catch (error) {
+    console.error('Error saving cards:', error);
+  }
+};
+
+// Create the Zustand store
+export const useCardStore = create<CardState>((set, get) => ({
+  ...createEmptyCard(),
+  savedCards: [],
 
   // Set the card title
   setTitle: (title) => set({ title }),
@@ -177,6 +241,111 @@ export const useCardStore = create<CardState>((set) => ({
         ),
       };
     }),
+
+  // Create a new card
+  createNewCard: () => {
+    set(createEmptyCard());
+  },
+
+  // Save the current card
+  saveCard: () => {
+    const state = get();
+    const now = new Date().toISOString();
+
+    // Create the card data object
+    const cardData: CardData = {
+      id: state.id,
+      title: state.title,
+      backgroundColor: state.backgroundColor,
+      elements: state.elements,
+      createdAt: now,
+      updatedAt: now,
+      views: 0
+    };
+
+    // Get existing cards and update or add this one
+    const existingCards = get().savedCards;
+    const existingCardIndex = existingCards.findIndex(c => c.id === cardData.id);
+
+    let updatedCards: CardData[];
+    if (existingCardIndex >= 0) {
+      // Update existing card (preserve creation date and views)
+      updatedCards = existingCards.map((card, index) => {
+        if (index === existingCardIndex) {
+          return {
+            ...cardData,
+            createdAt: card.createdAt,
+            views: card.views,
+          };
+        }
+        return card;
+      });
+    } else {
+      // Add new card
+      updatedCards = [...existingCards, cardData];
+    }
+
+    // Update the store
+    set({ savedCards: updatedCards });
+
+    // Save to cookies
+    saveCardsToCookies(updatedCards);
+
+    return cardData.id;
+  },
+
+  // Load a card into the editor
+  loadCard: (cardId) => {
+    const savedCards = get().savedCards;
+    const cardToLoad = savedCards.find(c => c.id === cardId);
+
+    if (cardToLoad) {
+      set({
+        id: cardToLoad.id,
+        title: cardToLoad.title,
+        backgroundColor: cardToLoad.backgroundColor,
+        elements: cardToLoad.elements,
+        selectedElementId: null
+      });
+    }
+  },
+
+  // Load all saved cards from cookies
+  loadAllCards: () => {
+    const savedCards = loadSavedCardsFromCookies();
+    set({ savedCards });
+  },
+
+  // Delete a card
+  deleteCard: (cardId) => {
+    const state = get();
+    const updatedCards = state.savedCards.filter(c => c.id !== cardId);
+
+    set({ savedCards: updatedCards });
+    saveCardsToCookies(updatedCards);
+
+    // If we're currently editing the deleted card, create a new one
+    if (state.id === cardId) {
+      set(createEmptyCard());
+    }
+  },
+
+  // Increment view count for a card
+  incrementViews: (cardId) => {
+    const state = get();
+    const updatedCards = state.savedCards.map(card => {
+      if (card.id === cardId) {
+        return {
+          ...card,
+          views: card.views + 1
+        };
+      }
+      return card;
+    });
+
+    set({ savedCards: updatedCards });
+    saveCardsToCookies(updatedCards);
+  }
 }));
 
 // Helper function to create a new text element with default values
@@ -215,3 +384,9 @@ export const createShapeElement = (shape: 'rectangle' | 'circle' | 'triangle', o
   borderWidth: 1,
   ...overrides,
 });
+
+// Initialize store by loading saved cards
+if (typeof window !== 'undefined') {
+  // On client-side only
+  useCardStore.getState().loadAllCards();
+}
