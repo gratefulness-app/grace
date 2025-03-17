@@ -10,7 +10,7 @@ import {
   Share, Trash, MoveHorizontal, Check, Download, Layers
 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import { useCardStore, createTextElement } from '@/lib/stores/card-store';
+import { useCardStore, createTextElement, CardElement } from '@/lib/stores/card-store';
 import CardCanvas from '@/components/card/canvas';
 import ElementProperties from '@/components/card/elementProperties';
 
@@ -191,7 +191,7 @@ export default function CreateCardPage() {
                         {element.type === 'shape' && <LayoutGrid className="size-3.5" />}
                         <span className="truncate max-w-[130px]">
                           {element.type === 'text'
-                            ? (element as any).text.substring(0, 20) || 'Text'
+                            ? (element as CardElement & { text: string }).text.substring(0, 20) || 'Text'
                             : element.type.charAt(0).toUpperCase() + element.type.slice(1)}
                         </span>
                       </div>

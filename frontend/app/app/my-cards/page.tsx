@@ -28,7 +28,7 @@ function CardItem({
   sender?: string
 }) {
   return (
-    <Card className="p-0 overflow-hidden">
+    <Card className="p-0 overflow-hidden" data-id={id}>
       <div
         className="h-[180px] flex items-center justify-center text-white text-center rounded-t-xl"
         style={{ background: color }}

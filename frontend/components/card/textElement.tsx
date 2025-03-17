@@ -47,14 +47,25 @@ const TextElementComponent: React.FC<TextElementProps> = ({ element }) => {
     setText(e.currentTarget.textContent || '');
   };
 
-  // Handle when element is dragged - make sure types match DraggableWrapper expectations
-  const handleDrag = (_e: any, data: { x: number; y: number }) => {
-    updateElement(element.id, { x: data.x, y: data.y });
+  // Handle when element is dragged
+  const handleDrag = (_e: MouseEvent | React.MouseEvent | React.TouchEvent | TouchEvent, data: { x: number; y: number }) => {
+    // Here we might want to update the UI without committing to the store
+    console.log('TextElement drag:', { x: data.x, y: data.y, elementId: element.id });
+    updateElement(element.id, {
+      x: data.x,
+      y: data.y
+    });
   };
 
-  // Handle when dragging stops - make sure types match DraggableWrapper expectations
-  const handleDragStop = (_e: any, data: { x: number; y: number }) => {
-    // You can add any logic needed when drag stops
+  // Handle when dragging stops
+  const handleDragStop = (_e: MouseEvent | React.MouseEvent | React.TouchEvent | TouchEvent, data: { x: number; y: number }) => {
+    console.log('TextElement stop:', { x: data.x, y: data.y, elementId: element.id });
+
+    // Update the element position in the store
+    updateElement(element.id, {
+      x: data.x,
+      y: data.y
+    });
   };
 
   // Handle when editing is completed
